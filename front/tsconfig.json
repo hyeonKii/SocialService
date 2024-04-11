@@ -1,6 +1,13 @@
 {
   "compilerOptions": {
     "target": "ES2020",
+    "baseUrl": "src",
+    "paths": {
+      "pages/*": ["pages/*"],
+      "components/*": ["components/*"],
+      "firebaseApp/": ["firebaseApp/*"],
+      "context/*": ["context/*"]
+    },
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
