@@ -1,13 +1,17 @@
-import {ReactNode} from "react";
+import { ReactNode } from "react";
+import MenuList from "./Menu";
 
 interface LayoutProps {
-    children: ReactNode;
+  children: ReactNode;
 }
 
-export const Layout = ({children}: LayoutProps) => {
-    return (
-        <>
-            <div className="layout">{children}</div>
-        </>
-    );
+export const Layout = ({ children }: LayoutProps) => {
+  return (
+    <>
+      <div className="layout">
+        {children}
+        <MenuList />
+      </div>
+    </>
+  );
 };
