@@ -1,12 +1,36 @@
-import {Layout} from "components/Layout";
+import { Layout } from "components/Layout";
 import Router from "components/Router";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { app } from "firebaseApp";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import { useEffect, useState } from "react";
 
 function App() {
-    return (
-        <Layout>
-            <Router />
-        </Layout>
-    );
+  const auth = getAuth(app);
+
+  // isAuth가 초기화되었는지 확인하기 위해 init 상태를 설정
+  const [init, setInit] = useState<boolean>(false);
+  const [isAuth, setIsAuth] = useState<boolean>(!!auth?.currentUser);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setIsAuth(true);
+      } else {
+        setIsAuth(false);
+      }
+      setInit(true);
+    });
+  }, [auth]);
+
+  return (
+    <Layout>
+      <ToastContainer />
+      {init ? <Router isAuth={isAuth} /> : "loading..."}
+    </Layout>
+  );
 }
 
 export default App;
