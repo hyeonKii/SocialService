@@ -111,11 +111,11 @@ export default function SignupForm() {
 
         <div className="form__block">
           계정이 있으신가요?
-          <Link to="/login" className="form__link">
-            로그인하기
+          <Link to="/users/login" className="form__link">
+            로그인
           </Link>
         </div>
-        <div className="form__block">
+        <div className="form__block--lg">
           <button
             type="submit"
             className="form__btn-submit"
