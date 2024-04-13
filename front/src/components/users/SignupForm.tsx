@@ -94,19 +94,6 @@ export default function SignupForm() {
     }
   };
 
-  // google과 github 소셜 로그인 2개의 함수를 작성하는 것이 아닌 위 함수처럼 providerType 매개 변수를 설정해서 해결했다.
-  // const onClickGithubLogin = async () => {
-  //   const auth = getAuth(app);
-  //   const provider = new GithubAuthProvider();
-
-  //   await signInWithPopup(auth, provider)
-  //     .then(() => toast.success("로그인 되었습니다:)"))
-  //     .catch((error) => {
-  //       const errorMessage = error?.message;
-  //       toast?.error(errorMessage);
-  //     });
-  // };
-
   return (
     <>
       <form className="form form--lg" onSubmit={handleSubmit}>
