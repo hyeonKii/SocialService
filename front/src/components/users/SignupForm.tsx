@@ -7,6 +7,8 @@ import {
 } from "firebase/auth";
 import { app } from "firebaseApp";
 import React, { useState } from "react";
+import { FaGithub } from "react-icons/fa";
+import { FcGoogle } from "react-icons/fc";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -72,7 +74,7 @@ export default function SignupForm() {
     }
   };
 
-  const onClickSocialLogin = async (providerType : string) => {
+  const onClickSocialLogin = async (providerType: string) => {
     const auth = getAuth(app);
 
     let provider;
@@ -152,25 +154,18 @@ export default function SignupForm() {
             회원가입
           </button>
         </div>
-        <div className="form__block--lg">
-          <button
+        <div className="form__socialBtn">
+          <FcGoogle
             type="button"
-            id="google"
-            className="form__btn-google"
+            className="form__socialBtn-google"
             onClick={() => onClickSocialLogin("google")}
-          >
-            Google로 회원가입
-          </button>
-        </div>
-        <div className="form__block--lg">
-          <button
+          />
+
+          <FaGithub
             type="button"
-            id="github"
-            className="form__btn-github"
+            className="form__socialBtn-github"
             onClick={() => onClickSocialLogin("github")}
-          >
-            Github으로 회원가입
-          </button>
+          />
         </div>
       </form>
     </>

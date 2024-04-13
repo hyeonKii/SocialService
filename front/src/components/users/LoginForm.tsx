@@ -8,6 +8,8 @@ import {
 import { app } from "firebaseApp";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { FcGoogle } from "react-icons/fc";
+import { FaGithub } from "react-icons/fa";
 import { toast } from "react-toastify";
 
 export default function LoginForm() {
@@ -126,25 +128,18 @@ export default function LoginForm() {
             로그인
           </button>
         </div>
-        <div className="form__block--lg">
-          <button
+        <div className="form__socialBtn">
+          <FcGoogle
             type="button"
-            id="google"
-            className="form__btn-google"
+            className="form__socialBtn-google"
             onClick={() => onClickSocialLogin("google")}
-          >
-            Google로 로그인
-          </button>
-        </div>
-        <div className="form__block--lg">
-          <button
+          />
+
+          <FaGithub
             type="button"
-            id="github"
-            className="form__btn-github"
+            className="form__socialBtn-github"
             onClick={() => onClickSocialLogin("github")}
-          >
-            Github으로 로그인
-          </button>
+          />
         </div>
       </form>
     </>
