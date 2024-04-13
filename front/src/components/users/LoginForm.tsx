@@ -1,4 +1,10 @@
-import { signInWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  signInWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { app } from "firebaseApp";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
@@ -49,8 +55,28 @@ export default function LoginForm() {
         setError("");
       }
     }
+  };
 
-    
+  const onClickSocialLogin = async (providerType: string) => {
+    const auth = getAuth(app);
+
+    let provider;
+    if (providerType === "google") {
+      provider = new GoogleAuthProvider();
+    }
+
+    if (providerType === "github") {
+      provider = new GithubAuthProvider();
+    }
+
+    if (provider) {
+      await signInWithPopup(auth, provider)
+        .then(() => toast.success("로그인 되었습니다:)"))
+        .catch((error) => {
+          const errorMessage = error?.message;
+          toast?.error(errorMessage);
+        });
+    }
   };
 
   return (
@@ -98,6 +124,26 @@ export default function LoginForm() {
             disabled={error?.length > 0}
           >
             로그인
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            id="google"
+            className="form__btn-google"
+            onClick={() => onClickSocialLogin("google")}
+          >
+            Google로 로그인
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            id="github"
+            className="form__btn-github"
+            onClick={() => onClickSocialLogin("github")}
+          >
+            Github으로 로그인
           </button>
         </div>
       </form>

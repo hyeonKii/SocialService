@@ -1,6 +1,12 @@
-import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  GithubAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import { app } from "firebaseApp";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -66,6 +72,41 @@ export default function SignupForm() {
     }
   };
 
+  const onClickSocialLogin = async (providerType : string) => {
+    const auth = getAuth(app);
+
+    let provider;
+    if (providerType === "google") {
+      provider = new GoogleAuthProvider();
+    }
+
+    if (providerType === "github") {
+      provider = new GithubAuthProvider();
+    }
+
+    if (provider) {
+      await signInWithPopup(auth, provider)
+        .then(() => toast.success("로그인 되었습니다:)"))
+        .catch((error) => {
+          const errorMessage = error?.message;
+          toast?.error(errorMessage);
+        });
+    }
+  };
+
+  // google과 github 소셜 로그인 2개의 함수를 작성하는 것이 아닌 위 함수처럼 providerType 매개 변수를 설정해서 해결했다.
+  // const onClickGithubLogin = async () => {
+  //   const auth = getAuth(app);
+  //   const provider = new GithubAuthProvider();
+
+  //   await signInWithPopup(auth, provider)
+  //     .then(() => toast.success("로그인 되었습니다:)"))
+  //     .catch((error) => {
+  //       const errorMessage = error?.message;
+  //       toast?.error(errorMessage);
+  //     });
+  // };
+
   return (
     <>
       <form className="form form--lg" onSubmit={handleSubmit}>
@@ -122,6 +163,26 @@ export default function SignupForm() {
             disabled={error?.length > 0}
           >
             회원가입
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            id="google"
+            className="form__btn-google"
+            onClick={() => onClickSocialLogin("google")}
+          >
+            Google로 회원가입
+          </button>
+        </div>
+        <div className="form__block--lg">
+          <button
+            type="button"
+            id="github"
+            className="form__btn-github"
+            onClick={() => onClickSocialLogin("github")}
+          >
+            Github으로 회원가입
           </button>
         </div>
       </form>
