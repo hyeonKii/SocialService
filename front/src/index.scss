@@ -179,6 +179,19 @@ body {
 
 // post 레이아웃
 .post {
+  &__header {
+    button {
+      border: none;
+      padding: 16px;
+    }
+
+    &-btn {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+  }
+
   &__no-posts {
     padding: 16px;
 
@@ -189,7 +202,6 @@ body {
       border-radius: 4px;
     }
   }
-
 
   padding-bottom: 40px;
 
@@ -356,14 +368,13 @@ body {
   margin-top: 20px;
   justify-content: center;
 
-
   &-google {
     width: 80px;
     height: 40px;
     padding: 5px;
     background-color: white;
     border-radius: 999px;
-  
+
     &:hover,
     &:focus {
       background-color: $gray;
@@ -376,7 +387,7 @@ body {
     padding: 5px;
     background-color: black;
     border-radius: 999px;
-  
+
     &:hover,
     &:focus {
       background-color: $gray;
