@@ -1,3 +1,4 @@
+import { FirebaseError } from "firebase/app";
 import {
   createUserWithEmailAndPassword,
   getAuth,
@@ -19,7 +20,7 @@ export default function SignupForm() {
   const [pwConfirm, setPwConfirm] = useState<string>("");
   const navigate = useNavigate();
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
@@ -27,9 +28,9 @@ export default function SignupForm() {
       await createUserWithEmailAndPassword(auth, email, password);
       navigate("/");
       toast.success("회원가입이 성공적으로 완료되었습니다 :)");
-    } catch (error: any) {
-      toast.error(error?.code);
-    }
+    } catch (e) {
+      if (e instanceof FirebaseError) toast.error(e?.message);
+  }
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
