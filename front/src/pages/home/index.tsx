@@ -15,6 +15,7 @@ export interface PostProps {
   likes?: string[];
   likeCount?: number;
   comments?: any;
+  hashTags: string[];
 }
 
 export default function HomePage() {
@@ -23,10 +24,13 @@ export default function HomePage() {
 
   useEffect(() => {
     if (user) {
-      let postRef = collection(db, "posts");
-      let postsQuery = query(postRef, orderBy("createdAt", "desc"));
+      // eslint-disable-next-line prefer-const
+      let postsRef = collection(db, "posts");
+      // eslint-disable-next-line prefer-const
+      let postsQuery = query(postsRef, orderBy("createdAt", "desc"));
 
       onSnapshot(postsQuery, (snapShot) => {
+        // eslint-disable-next-line prefer-const
         let dataObj = snapShot.docs.map((doc) => ({
           ...doc.data(),
           id: doc?.id,
