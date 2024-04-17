@@ -1,138 +1,217 @@
-import {FirebaseError} from "firebase/app";
-import {doc, getDoc, updateDoc} from "firebase/firestore";
-import {db} from "firebaseApp";
-import {PostProps} from "pages/home";
-import {useCallback, useEffect, useState} from "react";
-import {FiImage} from "react-icons/fi";
-import {useNavigate, useParams} from "react-router-dom";
-import {toast} from "react-toastify";
+import AuthContext from "context/AuthContext";
+import { FirebaseError } from "firebase/app";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import {
+  deleteObject,
+  getDownloadURL,
+  ref,
+  uploadString,
+} from "firebase/storage";
+import { db, storage } from "firebaseApp";
+import { PostProps } from "pages/home";
+import { useCallback, useContext, useEffect, useState } from "react";
+import { FiImage } from "react-icons/fi";
+import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+import PostHeader from "./PostHeader";
 
 export default function PostEditForm() {
-    const params = useParams();
-    const [post, setPost] = useState<PostProps | null>(null);
-    const [content, setContent] = useState<string>("");
-    const [hashTag, setHashTag] = useState<string>("");
-    const [tags, setTags] = useState<string[]>([]);
-    const navigate = useNavigate();
+  const params = useParams();
+  const [post, setPost] = useState<PostProps | null>(null);
+  const [content, setContent] = useState<string>("");
+  const [hashTag, setHashTag] = useState<string>("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [imageFile, setImageFile] = useState<string | null>(null);
+  const [isSubmit, setIsSubmit] = useState<boolean>(false);
+  const { user } = useContext(AuthContext);
 
-    const handleFileUpload = () => {};
+  const navigate = useNavigate();
 
-    const getPost = useCallback(async () => {
-        if (params.id) {
-            const docRef = doc(db, "posts", params.id);
-            const docSnap = await getDoc(docRef);
-            setPost({...(docSnap?.data() as PostProps), id: docSnap.id});
-            setContent(docSnap?.data()?.content);
-            setTags(docSnap?.data()?.hashTags);
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {
+      target: { files },
+    } = e;
+
+    const file = files?.[0];
+    const fileReader = new FileReader();
+    fileReader?.readAsDataURL(file as Blob);
+
+    fileReader.onloadend = (e: ProgressEvent) => {
+      if (e.currentTarget instanceof FileReader) {
+        const result = e.currentTarget.result as string;
+        setImageFile(result);
+      }
+    };
+  };
+
+  const getPost = useCallback(async () => {
+    if (params.id) {
+      const docRef = doc(db, "posts", params.id);
+      const docSnap = await getDoc(docRef);
+      setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id });
+      setContent(docSnap?.data()?.content);
+      setTags(docSnap?.data()?.hashTags);
+      setImageFile(docSnap?.data()?.imageURL);
+    }
+  }, [params.id]);
+
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setIsSubmit(true);
+    const key = `${user?.uid}/${uuidv4()}`;
+    const storageRef = ref(storage, key);
+
+    try {
+      if (post) {
+        // 기존 이미지 제거
+        if (post?.imageURL) {
+          let imageRef = ref(storage, post?.imageURL);
+          await deleteObject(imageRef).catch((error) => {
+            toast.error(error);
+          });
         }
-    }, [params.id]);
-
-    const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        try {
-            if (post) {
-                const postRef = doc(db, "posts", post?.id);
-                await updateDoc(postRef, {
-                    content: content,
-                    hashTags: tags
-                });
-            }
-            navigate(`/posts/${post?.id}`);
-            toast.success("게시글을 수정했습니다.");
-        } catch (e) {
-            if (e instanceof FirebaseError) {
-                toast.error(e?.message);
-            }
+        // 새로운 사진 업로드
+        let imageURL = "";
+        if (imageFile) {
+          const data = await uploadString(storageRef, imageFile, "data_url");
+          imageURL = await getDownloadURL(data?.ref);
         }
-    };
 
-    const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const {
-            target: {name, value},
-        } = e;
+        const postRef = doc(db, "posts", post?.id);
+        await updateDoc(postRef, {
+          content: content,
+          hashTags: tags,
+          imageURL: imageURL,
+        });
+        navigate(`/posts/${post?.id}`);
+        toast.success("게시글을 수정했습니다.");
+      }
+      setImageFile(null);
+      setIsSubmit(false);
+    } catch (e) {
+      if (e instanceof FirebaseError) {
+        toast.error(e?.message);
+      }
+    }
+  };
 
-        if (name === "content") {
-            setContent(value);
-        }
-    };
+  const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const {
+      target: { name, value },
+    } = e;
 
-    const removeTag = (tag: string) => {
-        setTags(tags?.filter((item) => item !== tag));
-    };
+    if (name === "content") {
+      setContent(value);
+    }
+  };
 
-    const onChangeHashTag = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setHashTag(e?.target?.value?.trim());
-    };
+  const removeTag = (tag: string) => {
+    setTags(tags?.filter((item) => item !== tag));
+  };
 
-    const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === " " && e.currentTarget.value.trim() !== "") {
-            // 같은 태그가 존재하면 에러 발생
-            // 아닌 경우 태그 생성
-            if (tags?.includes(e.currentTarget.value?.trim())) {
-                toast.error("같은 태그가 존재합니다.");
-            } else {
-                setTags((prev) =>
-                    prev?.length > 0 ? [...prev, hashTag] : [hashTag]
-                );
-                setHashTag("");
-            }
-        }
-    };
+  const onChangeHashTag = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setHashTag(e?.target?.value?.trim());
+  };
 
-    useEffect(() => {
-        if (params.id) getPost();
-    }, [getPost, params.id]);
+  const handleKeyUp = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === " " && e.currentTarget.value.trim() !== "") {
+      // 같은 태그가 존재하면 에러 발생
+      // 아닌 경우 태그 생성
+      if (tags?.includes(e.currentTarget.value?.trim())) {
+        toast.error("같은 태그가 존재합니다.");
+      } else {
+        setTags((prev) => (prev?.length > 0 ? [...prev, hashTag] : [hashTag]));
+        setHashTag("");
+      }
+    }
+  };
 
-    return (
-        <form className="post-form" onSubmit={onSubmit}>
-            <textarea
-                className="post-form__textarea"
-                name="content"
-                id="content"
-                placeholder="What is happening?"
-                onChange={onChange}
-                required
+  const handleDeleteImg = () => {
+    setImageFile(null);
+  };
+
+  useEffect(() => {
+    if (params.id) getPost();
+  }, [getPost, params.id]);
+
+  return (
+    <>
+      <div className="post">
+        <PostHeader />
+      </div>
+      <form className="post-form" onSubmit={onSubmit}>
+        <textarea
+          className="post-form__textarea"
+          name="content"
+          id="content"
+          placeholder="What is happening?"
+          onChange={onChange}
+          value={content}
+          required
+        />
+        <div className="post-form__hashtags">
+          <span className="post-form__hashtags-outputs">
+            {tags?.map((tag, idx) => (
+              <span
+                className="post-form__hashtags-tag"
+                key={idx}
+                onClick={() => removeTag(tag)}
+              >
+                #{tag}
+              </span>
+            ))}
+          </span>
+          <input
+            className="post-form__input"
+            name="hashtag"
+            id="hashtag"
+            placeholder="해시태그 + 스페이스바 입력"
+            onChange={onChangeHashTag}
+            onKeyUp={handleKeyUp}
+            value={hashTag}
+          />
+        </div>
+        <div className="post-form__submit-area">
+          <div className="post-form__image-area">
+            <label htmlFor="file-input" className="post-form__file">
+              <FiImage className="post-form__file-icon" />
+            </label>
+            <input
+              type="file"
+              name="file-input"
+              id="file-input"
+              accept="image/*"
+              onChange={handleFileUpload}
+              className="hidden"
             />
-            <div className="post-form__hashtags">
-                <span className="post-form__hashtags-outputs">
-                    {tags?.map((tag, idx) => (
-                        <span
-                            className="post-form__hashtags-tag"
-                            key={idx}
-                            onClick={() => removeTag(tag)}
-                        >
-                            #{tag}
-                        </span>
-                    ))}
-                </span>
-                <input
-                    className="post-form__input"
-                    name="hashtag"
-                    id="hashtag"
-                    placeholder="해시태그 + 스페이스바 입력"
-                    onChange={onChangeHashTag}
-                    onKeyUp={handleKeyUp}
-                    value={hashTag}
+            {imageFile && (
+              <div className="post-form__attachment">
+                <img
+                  src={imageFile}
+                  alt="attachment"
+                  width={100}
+                  height={100}
                 />
-            </div>
-            <div className="post-form__submit-area">
-                <label htmlFor="file-input" className="post-form__file">
-                    <FiImage className="post-form__file-icon" />
-                </label>
-                <input
-                    type="file"
-                    name="file-input"
-                    accept="image/*"
-                    onChange={handleFileUpload}
-                    className="hidden"
-                />
-                <input
-                    type="submit"
-                    value="수정"
-                    className="post-form__submit-btn"
-                />
-            </div>
-        </form>
-    );
+                <button
+                  className="post-form__clear-btn"
+                  type="button"
+                  onClick={handleDeleteImg}
+                >
+                  Clear
+                </button>
+              </div>
+            )}
+          </div>
+          <input
+            type="submit"
+            value="edit"
+            className="post-form__submit-btn"
+            disabled={isSubmit}
+          />
+        </div>
+      </form>
+    </>
+  );
 }

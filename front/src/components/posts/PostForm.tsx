@@ -49,7 +49,6 @@ export default function PostForm() {
       }
 
       //업로드된 이미지 url 업데이트
-
       await addDoc(collection(db, "posts"), {
         content: content,
         createdAt: new Date()?.toLocaleDateString("ko", {
@@ -154,7 +153,7 @@ export default function PostForm() {
             name="file-input"
             id="file-input"
             accept="image/*"
-            onChange={(e) => handleFileUpload(e)}
+            onChange={handleFileUpload}
             className="hidden"
           />
           {imageFile && (
