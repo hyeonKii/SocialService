@@ -159,6 +159,11 @@ export default function SignupForm() {
           <FcGoogle
             type="button"
             className="form__socialBtn-google"
+
+            //이벤트 헨들러 함수는 기본적으로 동기함수다.
+            //해당 이벤트가 발생하면 즉시 처리된다.
+            //따라서 비동기 작업을 수행하는 함수를 이벤트 핸들러로 사용하면
+            //에러가 발생한다.
             onClick={() => onClickSocialLogin("google")}
           />
 

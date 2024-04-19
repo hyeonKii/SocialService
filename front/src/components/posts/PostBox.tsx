@@ -21,6 +21,7 @@ export default function PostBox({ post }: PostBoxProps) {
   const imageRef = ref(storage, post?.imageURL);
 
   const handleDelete = async () => {
+    
     const confirm = window.confirm("해당 게시글을 삭제하시겠습니까?");
 
     if (confirm) {
