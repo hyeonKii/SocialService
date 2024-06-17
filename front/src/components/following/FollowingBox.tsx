@@ -17,6 +17,12 @@ interface FollowingProps {
   post: PostProps;
 }
 
+//버그 발견
+// 회원가입을 통해 이용하는 사용자에 대하여는 해당 기능이 원활히 작동한다
+// 구글 소셜 로그인을 통해 이용자에 대하여 팔로잉 기능이 정상적으로 작동되지 않는다.
+// 원인을 조사할 필요가 있다.
+// 해결) 기존에 테스트 데이터가 있어서 생긴 문제였다
+
 export default function FollowingBox({ post }: FollowingProps) {
   const { user } = useContext(AuthContext);
   const [postFollowers, setPostFollowers] = useState<string[]>([]);
