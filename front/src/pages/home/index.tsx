@@ -1,3 +1,4 @@
+import { CommentProps } from "components/comments/CommentBox";
 import PostBox from "components/posts/PostBox";
 import PostForm from "components/posts/PostForm";
 import AuthContext from "context/AuthContext";
@@ -14,7 +15,7 @@ export interface PostProps {
   profileUrl?: string;
   likes?: string[];
   likeCount?: number;
-  comments?: string;
+  comments?: CommentProps[];
   hashTags: string[];
   imageURL?: string;
 }
