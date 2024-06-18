@@ -9,6 +9,7 @@ import {
 } from "firebase/firestore";
 import { deleteObject, ref } from "firebase/storage";
 import { db, storage } from "firebaseApp";
+import { useTranslation } from "hooks/useTranslation";
 import { PostProps } from "pages/home";
 import { useContext } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
@@ -22,6 +23,7 @@ interface PostBoxProps {
 
 export default function PostBox({ post }: PostBoxProps) {
   const { user } = useContext(AuthContext);
+  const t = useTranslation();
   const navigate = useNavigate();
 
   const toggleLike = async () => {
@@ -79,7 +81,7 @@ export default function PostBox({ post }: PostBoxProps) {
               <div className="post__email">{post?.email}</div>
               <div className="post__createdAt">{post?.createdAt}</div>
             </div>
-            <FollowingBox post={post}/>
+            <FollowingBox post={post} />
           </div>
         </div>
         <Link to={`/posts/${post?.id}`}>
@@ -112,10 +114,10 @@ export default function PostBox({ post }: PostBoxProps) {
               className="post__delete"
               onClick={handleDelete}
             >
-              Delete
+              {t("BUTTON_DELETE")}
             </button>
             <button type="button" className="post__edit">
-              <Link to={`/posts/edit/${post?.id}`}>Edit</Link>
+              <Link to={`/posts/edit/${post?.id}`}>{t("BUTTON_EDIT")}</Link>
             </button>
           </>
         )}

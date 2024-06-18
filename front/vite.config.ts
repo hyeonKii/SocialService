@@ -8,8 +8,11 @@ export default defineConfig({
     alias: [
       {find: "components", replacement: "/src/components"},
       {find: "pages", replacement: "/src/pages"},
+      {find: "hooks", replacement: "/src/hooks"},
+      {find: "constant", replacement: "/src/constant"},
       {find: "firebaseApp", replacement: "/src/firebaseApp"},
-      {find: "context", replacement: "/src/context"}
+      {find: "context", replacement: "/src/context"},
+      {find: "atom", replacement: "/src/atom"}
     ]
   }
 })

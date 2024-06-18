@@ -5,8 +5,11 @@
     "paths": {
       "pages/*": ["pages/*"],
       "components/*": ["components/*"],
+      "hooks/*": ["hooks/*"],
+      "constant/*": ["constant/*"],
       "firebaseApp/": ["firebaseApp/*"],
-      "context/*": ["context/*"]
+      "context/*": ["context/*"],
+      "atom/*": ["atom/*"],
     },
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],

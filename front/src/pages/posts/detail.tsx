@@ -3,7 +3,7 @@ import CommentForm from "components/comments/CommentForm";
 import { Loader } from "components/loader/Loader";
 import PostBox from "components/posts/PostBox";
 import PostHeader from "components/posts/PostHeader";
-import { doc, getDoc, onSnapshot } from "firebase/firestore";
+import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "firebaseApp";
 import { PostProps } from "pages/home";
 import { useCallback, useEffect, useState } from "react";

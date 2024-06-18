@@ -11,6 +11,7 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "firebaseApp";
+import { useTranslation } from "hooks/useTranslation";
 import { PostProps } from "pages/home";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { toast } from "react-toastify";
@@ -22,6 +23,7 @@ interface FollowingProps {
 export default function FollowingBox({ post }: FollowingProps) {
   const { user } = useContext(AuthContext);
   const [postFollowers, setPostFollowers] = useState<string[]>([]);
+  const t = useTranslation();
 
   const onClickFollow = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -121,7 +123,7 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__following-btn"
             onClick={(e) => onClickDeleteFollow(e)}
           >
-            Following
+            {t("BUTTON_FOLLOWING")}
           </button>
         ) : (
           <button
@@ -129,7 +131,7 @@ export default function FollowingBox({ post }: FollowingProps) {
             className="post__follow-btn"
             onClick={(e) => onClickFollow(e)}
           >
-            Follow
+            {t("BUTTON_FOLLOW")}
           </button>
         ))}
     </>

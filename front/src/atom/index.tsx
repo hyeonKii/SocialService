@@ -4,5 +4,5 @@ export type LanguageType = "ko" | "en";
 
 export const languageState = atom({
   key: "language",
-  default: "ko",
+  default: localStorage.getItem("language") as LanguageType || "ko",
 });

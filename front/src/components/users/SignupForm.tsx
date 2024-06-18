@@ -7,6 +7,7 @@ import {
   signInWithPopup,
 } from "firebase/auth";
 import { app } from "firebaseApp";
+import { useTranslation } from "hooks/useTranslation";
 import React, { useState } from "react";
 import { FaGithub } from "react-icons/fa";
 import { FcGoogle } from "react-icons/fc";
@@ -19,6 +20,7 @@ export default function SignupForm() {
   const [password, setPassword] = useState<string>("");
   const [pwConfirm, setPwConfirm] = useState<string>("");
   const navigate = useNavigate();
+  const t = useTranslation();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -30,7 +32,7 @@ export default function SignupForm() {
       toast.success("회원가입이 성공적으로 완료되었습니다 :)");
     } catch (e) {
       if (e instanceof FirebaseError) toast.error(e?.message);
-  }
+    }
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,9 +102,9 @@ export default function SignupForm() {
   return (
     <>
       <form className="form form--lg" onSubmit={handleSubmit}>
-        <div className="form__title">회원가입</div>
+        <div className="form__title">{t("MENU_SIGNUP")}</div>
         <div className="form__block">
-          <label htmlFor="email">이메일</label>
+          <label htmlFor="email">{t("FORM_EMAIL")}</label>
           <input
             type="text"
             name="email"
@@ -113,7 +115,7 @@ export default function SignupForm() {
           />
         </div>
         <div className="form__block">
-          <label htmlFor="password">비밀번호</label>
+          <label htmlFor="password">{t("FORM_PASSWORD")}</label>
           <input
             type="password"
             name="password"
@@ -124,7 +126,9 @@ export default function SignupForm() {
           />
         </div>
         <div className="form__block">
-          <label htmlFor="pwConfirm">비밀번호 확인</label>
+          <label htmlFor="password_confirmation">
+            {t("FORM_PASSWORD_CHECK")}
+          </label>
           <input
             type="password"
             name="pwConfirm"
@@ -141,9 +145,9 @@ export default function SignupForm() {
         )}
 
         <div className="form__block">
-          계정이 있으신가요?
+          {t("YES_ACCOUNT")}
           <Link to="/users/login" className="form__link">
-            로그인
+            {t("SIGNIN_LINK")}
           </Link>
         </div>
         <div className="form__block--lg">
@@ -152,14 +156,13 @@ export default function SignupForm() {
             className="form__btn-submit"
             disabled={error?.length > 0}
           >
-            회원가입
+            {t("MENU_SIGNUP")}
           </button>
         </div>
         <div className="form__socialBtn">
           <FcGoogle
             type="button"
             className="form__socialBtn-google"
-
             //이벤트 헨들러 함수는 기본적으로 동기함수다.
             //해당 이벤트가 발생하면 즉시 처리된다.
             //따라서 비동기 작업을 수행하는 함수를 이벤트 핸들러로 사용하면
