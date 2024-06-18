@@ -1,8 +1,10 @@
 import AuthContext from "context/AuthContext";
 import { FirebaseError } from "firebase/app";
 import {
+  addDoc,
   arrayRemove,
   arrayUnion,
+  collection,
   doc,
   onSnapshot,
   setDoc,
@@ -16,12 +18,6 @@ import { toast } from "react-toastify";
 interface FollowingProps {
   post: PostProps;
 }
-
-//버그 발견
-// 회원가입을 통해 이용하는 사용자에 대하여는 해당 기능이 원활히 작동한다
-// 구글 소셜 로그인을 통해 이용자에 대하여 팔로잉 기능이 정상적으로 작동되지 않는다.
-// 원인을 조사할 필요가 있다.
-// 해결) 기존에 테스트 데이터가 있어서 생긴 문제였다
 
 export default function FollowingBox({ post }: FollowingProps) {
   const { user } = useContext(AuthContext);
@@ -51,6 +47,19 @@ export default function FollowingBox({ post }: FollowingProps) {
           { merge: true }
         );
         toast.success("팔로우를 했습니다 :)");
+
+        //팔로잉 알림 생성
+        await addDoc(collection(db, "notifications"), {
+          createdAt: new Date()?.toLocaleDateString("ko", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+          }),
+          content: `${user?.email || user?.displayName}가 팔로우 했습니다.`,
+          url: "#",
+          isRead: false,
+          uid: post?.uid,
+        });
       }
     } catch (e) {
       if (e instanceof FirebaseError) {
