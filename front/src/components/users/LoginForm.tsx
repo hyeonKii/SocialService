@@ -128,7 +128,7 @@ export default function LoginForm() {
                         className="form__btn-submit"
                         disabled={error?.length > 0}
                     >
-                        {t("SIGNUP_LINK")}
+                        {t("SIGNIN_LINK")}
                     </button>
                 </div>
                 <div className="form__socialBtn">
