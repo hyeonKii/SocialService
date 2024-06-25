@@ -91,7 +91,7 @@ export default function SignupForm() {
 
     if (provider) {
       await signInWithPopup(auth, provider)
-        .then(() => toast.success("로그인 되었습니다:)"))
+        .then(() => toast.success("로그인 되었습니다!"))
         .catch((error) => {
           const errorMessage = error?.message;
           toast?.error(errorMessage);
