@@ -54,6 +54,7 @@ export default function PostEditForm() {
       setTags(docSnap?.data()?.hashTags);
       setImageFile(docSnap?.data()?.imageURL);
     }
+
   }, [params.id]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,11 +66,12 @@ export default function PostEditForm() {
 
     try {
       if (post) {
+        // 이슈 발견 = 텍스트만 수정할 경우 에러 발생
         // 기존 이미지 제거
         if (post?.imageURL) {
           let imageRef = ref(storage, post?.imageURL);
           await deleteObject(imageRef).catch((error) => {
-            toast.error(error);
+            console.log(error);
           });
         }
         // 새로운 사진 업로드
@@ -78,6 +80,7 @@ export default function PostEditForm() {
           const data = await uploadString(storageRef, imageFile, "data_url");
           imageURL = await getDownloadURL(data?.ref);
         }
+        
 
         const postRef = doc(db, "posts", post?.id);
         await updateDoc(postRef, {
@@ -85,6 +88,9 @@ export default function PostEditForm() {
           hashTags: tags,
           imageURL: imageURL,
         });
+        
+        console.log(post)
+
         navigate(`/posts/${post?.id}`);
         toast.success("게시글을 수정했습니다.");
       }
@@ -134,6 +140,7 @@ export default function PostEditForm() {
 
   useEffect(() => {
     if (params.id) getPost();
+
   }, [getPost, params.id]);
 
   return (
