@@ -71,7 +71,7 @@ export default function CommentForm({ post }: CommentFormProps) {
         });
       }
 
-      toast.success("성공적으로 댓글을 생성했습니다.");
+      toast.success("댓글을 작성했습니다.");
       setComment("");
 
       try {
