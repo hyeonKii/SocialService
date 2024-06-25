@@ -48,7 +48,7 @@ export default function FollowingBox({ post }: FollowingProps) {
           { users: arrayUnion({ id: user?.uid }) },
           { merge: true }
         );
-        toast.success("팔로우를 했습니다 :)");
+        toast.success("팔로우 했습니다 :)");
 
         //팔로잉 알림 생성
         await addDoc(collection(db, "notifications"), {
