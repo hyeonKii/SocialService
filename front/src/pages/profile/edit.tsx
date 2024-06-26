@@ -41,31 +41,40 @@ export default function ProfileEdit() {
     let newImgURL = null;
 
     try {
-      //기존 스토리지 이미지 삭제
-      if (user?.photoURL && user?.photoURL?.includes(STORAGE_DOWNLOAD_URL)) {
-        const imageRef = ref(storage, user?.photoURL);
-        if (imageRef) {
-          await deleteObject(imageRef).catch((error) => {
-            toast.error(error);
+      // if 이미지를 변경한 경우 else 변경하지 않은 경우
+      if (user) {
+        // 새로운 이미지 경로와 기존 이미지 경로가 다르면
+        if (imageUrl !== user?.photoURL) {
+          //새로운 이미지 업로드
+          if (imageUrl) {
+            const data = await uploadString(storageRef, imageUrl, "data_url");
+            newImgURL = await getDownloadURL(data?.ref);
+          }
+
+          //기존 스토리지 이미지 삭제
+          if (
+            user?.photoURL &&
+            user?.photoURL?.includes(STORAGE_DOWNLOAD_URL)
+          ) {
+            const imageRef = ref(storage, user?.photoURL);
+            if (imageRef) {
+              await deleteObject(imageRef).catch((error) => {
+                toast.error(error);
+              });
+            }
+          }
+          await updateProfile(user, {
+            displayName: displayName || "",
+            photoURL: newImgURL || "",
+          });
+        } else {
+          await updateProfile(user, {
+            displayName: displayName || "",
           });
         }
       }
-
-      //이미지 업로드
-      if (imageUrl) {
-        const data = await uploadString(storageRef, imageUrl, "data_url");
-        newImgURL = await getDownloadURL(data?.ref);
-      }
-
-      //updateProfile 호출
-      if (user) {
-        await updateProfile(user, {
-          displayName: displayName || "",
-          photoURL: newImgURL || "",
-        });
-        toast.success("프로필이 업데이트 되었습니다!");
-        navigate("/profile");
-      }
+      navigate("/profile");
+      toast.success("프로필이 업데이트 되었습니다!");
     } catch (e) {
       if (e instanceof FirebaseError) {
         toast.error(e?.message);
