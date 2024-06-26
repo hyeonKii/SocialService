@@ -31,7 +31,8 @@ function App() {
     <RecoilRoot>
       <Layout>
         <ToastContainer
-          theme="dark"
+          theme="light"
+          toastStyle={{backgroundColor: "transparent"}}
           autoClose={1000}
           hideProgressBar
           newestOnTop

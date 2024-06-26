@@ -68,7 +68,7 @@ body {
     grid-template-columns: repeat(5, minmax(0, 1fr));
     background-color: transparent;
 
-    &--text  {
+    &--text {
       background-color: transparent;
     }
 
@@ -133,9 +133,6 @@ body {
     border: none;
   }
 }
-
-
-
 
 // home 레이아웃
 .home {
@@ -459,6 +456,11 @@ body {
         &.post__likes,
         &.post__comments {
           @extend .post__flex;
+
+          .post__likes--icon,
+          .post__comments--icon {
+            background-color: transparent;
+          }
 
           &:hover,
           &:focus {

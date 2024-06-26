@@ -43,14 +43,14 @@ export default function PostBox({ post }: PostBoxProps) {
   };
 
   //storage image 참조
-  const imageRef = ref(storage, post?.imageURL);
+  const imageRef = ref(storage, post?.imageUrl);
 
   const handleDelete = async () => {
     const confirm = window.confirm("해당 게시글을 삭제하시겠습니까?");
 
     if (confirm) {
       //storage image 삭제
-      if (post?.imageURL) {
+      if (post?.imageUrl) {
         deleteObject(imageRef).catch((error) => {
           toast.error(error);
         });
@@ -86,10 +86,10 @@ export default function PostBox({ post }: PostBoxProps) {
         </div>
         <Link to={`/posts/${post?.id}`}>
           <div className="post__box-content">{post?.content}</div>
-          {post?.imageURL && (
+          {post?.imageUrl && (
             <div className="post__image-div">
               <img
-                src={post?.imageURL}
+                src={post?.imageUrl}
                 alt="post img"
                 className="post__image"
                 width={100}
@@ -123,14 +123,14 @@ export default function PostBox({ post }: PostBoxProps) {
         )}
         <button type="button" className="post__likes" onClick={toggleLike}>
           {user && post?.likes?.includes(user.uid) ? (
-            <AiFillHeart />
+            <AiFillHeart className="post__likes-icon" />
           ) : (
-            <AiOutlineHeart />
+            <AiOutlineHeart className="post__likes--icon" />
           )}
           {post?.likeCount || 0}
         </button>
         <button type="button" className="post__comments">
-          <FaRegComment />
+          <FaRegComment className="post__comments--icon"/>
           {post?.comments?.length || 0}
         </button>
       </div>

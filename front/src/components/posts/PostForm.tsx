@@ -44,10 +44,10 @@ export default function PostForm() {
 
     try {
       //이미지 업로드
-      let imageURL = "";
+      let imageUrl = "";
       if (imageFile) {
-        const data = await uploadString(storageRef, imageFile, "data_url");
-        imageURL = await getDownloadURL(data?.ref);
+        const data = await uploadString(storageRef, imageFile, 'data_url');
+        imageUrl = await getDownloadURL(data?.ref);
       }
 
       //업로드된 이미지 url 업데이트
@@ -61,7 +61,7 @@ export default function PostForm() {
         uid: user?.uid,
         email: user?.email,
         hashTags: tags,
-        imageURL: imageURL,
+        imageUrl: imageUrl,
       });
       setContent("");
       setTags([]);

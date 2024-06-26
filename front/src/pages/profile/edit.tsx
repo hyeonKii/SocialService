@@ -20,7 +20,7 @@ const STORAGE_DOWNLOAD_URL = "https://firebasestorage.googleapis.com";
 
 export default function ProfileEdit() {
   const [displayName, setDisplayName] = useState<string>("");
-  const [imageURL, setImageURL] = useState<string>("");
+  const [imageUrl, setImageUrl] = useState<string>("");
   const { user } = useContext(AuthContext);
   const t = useTranslation();
   const navigate = useNavigate();
@@ -52,8 +52,8 @@ export default function ProfileEdit() {
       }
 
       //이미지 업로드
-      if (imageURL) {
-        const data = await uploadString(storageRef, imageURL, "data_url");
+      if (imageUrl) {
+        const data = await uploadString(storageRef, imageUrl, "data_url");
         newImgURL = await getDownloadURL(data?.ref);
       }
 
@@ -85,18 +85,18 @@ export default function ProfileEdit() {
     fileReader.onloadend = (e: ProgressEvent) => {
       if (e.currentTarget instanceof FileReader) {
         const result = e.currentTarget.result as string;
-        setImageURL(result);
+        setImageUrl(result);
       }
     };
   };
 
   const handleDeleteImg = () => {
-    setImageURL("");
+    setImageUrl("");
   };
 
   useEffect(() => {
     if (user?.photoURL) {
-      setImageURL(user?.photoURL);
+      setImageUrl(user?.photoURL);
     }
     if (user?.displayName) {
       setDisplayName(user?.displayName);
@@ -115,9 +115,9 @@ export default function ProfileEdit() {
             onChange={onChange}
             value={displayName}
           />
-          {imageURL && (
+          {imageUrl && (
             <div className="post-form__attachment">
-              <img src={imageURL} alt="attachment" width={100} height={100} />
+              <img src={imageUrl} alt="attachment" width={100} height={100} />
               <button
                 type="button"
                 onClick={handleDeleteImg}

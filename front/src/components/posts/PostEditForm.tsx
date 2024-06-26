@@ -52,9 +52,8 @@ export default function PostEditForm() {
       setPost({ ...(docSnap?.data() as PostProps), id: docSnap.id });
       setContent(docSnap?.data()?.content);
       setTags(docSnap?.data()?.hashTags);
-      setImageFile(docSnap?.data()?.imageURL);
+      setImageFile(docSnap?.data()?.imageUrl);
     }
-
   }, [params.id]);
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -65,32 +64,37 @@ export default function PostEditForm() {
     const storageRef = ref(storage, key);
 
     try {
+      // if 이미지를 변경한 경우 else 변경하지 않은 경우
       if (post) {
-        // 이슈 발견 = 텍스트만 수정할 경우 에러 발생
-        // 기존 이미지 제거
-        if (post?.imageURL) {
-          let imageRef = ref(storage, post?.imageURL);
-          await deleteObject(imageRef).catch((error) => {
-            console.log(error);
+        // 업데이트 할 FireStore Document 참조
+        const postRef = doc(db, "posts", post?.id);
+
+        // 새로운 이미지 경로와 기존 이미지 경로가 다르면
+        if (imageFile !== post?.imageUrl) {
+          // 새로운 이미지 먼저 업로드
+          let newPhotoUrl = "";
+          if (imageFile) {
+            const data = await uploadString(storageRef, imageFile, "data_url");
+            newPhotoUrl = await getDownloadURL(data?.ref);
+          }
+          // 기존이미지 경로 제거
+          if (post?.imageUrl !== newPhotoUrl) {
+            let imageRef = ref(storage, post?.imageUrl);
+            await deleteObject(imageRef).catch((error) => {
+              toast.error(error);
+            });
+          }
+          await updateDoc(postRef, {
+            content: content,
+            hashTags: tags,
+            imageUrl: newPhotoUrl,
+          });
+        } else {
+          await updateDoc(postRef, {
+            content: content,
+            hashTags: tags,
           });
         }
-        // 새로운 사진 업로드
-        let imageURL = "";
-        if (imageFile) {
-          const data = await uploadString(storageRef, imageFile, "data_url");
-          imageURL = await getDownloadURL(data?.ref);
-        }
-        
-
-        const postRef = doc(db, "posts", post?.id);
-        await updateDoc(postRef, {
-          content: content,
-          hashTags: tags,
-          imageURL: imageURL,
-        });
-        
-        console.log(post)
-
         navigate(`/posts/${post?.id}`);
         toast.success("게시글을 수정했습니다.");
       }
@@ -140,7 +144,6 @@ export default function PostEditForm() {
 
   useEffect(() => {
     if (params.id) getPost();
-
   }, [getPost, params.id]);
 
   return (

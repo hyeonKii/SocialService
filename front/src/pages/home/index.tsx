@@ -25,7 +25,7 @@ export interface PostProps {
   likeCount?: number;
   comments?: CommentProps[];
   hashTags: string[];
-  imageURL?: string;
+  imageUrl?: string;
 }
 
 type TabType = "all" | "following";
