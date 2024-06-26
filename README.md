@@ -15,7 +15,7 @@
 
 ### 앱 구조
 
-- (create-react-app) SPA
+- Vite
 - 반응형 웹
 - 미디어쿼리
 
@@ -32,7 +32,7 @@
 
 ### 배포
 
-- Vercel (수동 배포)
+- Vercel
 
 ### 컴포넌트
 
@@ -42,7 +42,7 @@
 
 - Firebase storage를 이용한 이미지 업로드
 - Firebase auth를 이용한 사용자 인증
-- firestore를 이용한 실시간 데이터 동기화 & 저장 & 관리 (onSnapshot 동기화 개념 사용)
+- Firestore를 이용한 실시간 데이터 동기화 & 저장 & 관리 (onSnapshot 동기화 개념 사용)
 
 ### 사용 스택
 
@@ -54,7 +54,7 @@
 ## 구현 기능
 
 1. 홈 타임라인
-- firestore 실시간 트위터 보여주기
+- Firestore 실시간 트위터 보여주기
 - React 컴포넌트로 트위터 표시
 
 2. 트윗 작성/편집 페이지
