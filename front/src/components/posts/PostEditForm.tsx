@@ -71,7 +71,7 @@ export default function PostEditForm() {
 
         // 새로운 이미지 경로 !== 기존 이미지 경로
         if (imageFile !== post?.imageUrl) {
-          // 새로운 이미지 먼저 업로드
+          // 새로운 이미지 업로드
           let newPhotoUrl = "";
           if (imageFile) {
             const data = await uploadString(storageRef, imageFile, "data_url");
