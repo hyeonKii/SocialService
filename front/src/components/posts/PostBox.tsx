@@ -123,7 +123,7 @@ export default function PostBox({ post }: PostBoxProps) {
         )}
         <button type="button" className="post__likes" onClick={toggleLike}>
           {user && post?.likes?.includes(user.uid) ? (
-            <AiFillHeart className="post__likes-icon" />
+            <AiFillHeart className="post__likes--icon" />
           ) : (
             <AiOutlineHeart className="post__likes--icon" />
           )}
