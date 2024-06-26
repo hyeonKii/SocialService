@@ -43,7 +43,7 @@ export default function ProfileEdit() {
     try {
       // if 이미지를 변경한 경우 else 변경하지 않은 경우
       if (user) {
-        // 새로운 이미지 경로와 기존 이미지 경로가 다르면
+        // 새로운 이미지 경로 !== 기존 이미지 경로
         if (imageUrl !== user?.photoURL) {
           //새로운 이미지 업로드
           if (imageUrl) {
