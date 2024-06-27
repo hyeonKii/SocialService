@@ -45,12 +45,6 @@ export default function ProfileEdit() {
       if (user) {
         // 새로운 이미지 경로 !== 기존 이미지 경로
         if (imageUrl !== user?.photoURL) {
-          //새로운 이미지 업로드
-          if (imageUrl) {
-            const data = await uploadString(storageRef, imageUrl, "data_url");
-            newImgURL = await getDownloadURL(data?.ref);
-          }
-
           //기존 스토리지 이미지 삭제
           if (
             user?.photoURL &&
@@ -63,6 +57,12 @@ export default function ProfileEdit() {
               });
             }
           }
+          //새로운 이미지 업로드
+          if (imageUrl) {
+            const data = await uploadString(storageRef, imageUrl, "data_url");
+            newImgURL = await getDownloadURL(data?.ref);
+          }
+
           await updateProfile(user, {
             displayName: displayName || "",
             photoURL: newImgURL || "",

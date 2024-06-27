@@ -71,19 +71,20 @@ export default function PostEditForm() {
 
         // 새로운 이미지 경로 !== 기존 이미지 경로
         if (imageFile !== post?.imageUrl) {
+          // 기존이미지 경로 제거
+          if (post?.imageUrl) {
+            let imageRef = ref(storage, post?.imageUrl);
+            await deleteObject(imageRef).catch((error) => {
+              toast.error(error);
+            });
+          }
           // 새로운 이미지 업로드
           let newPhotoUrl = "";
           if (imageFile) {
             const data = await uploadString(storageRef, imageFile, "data_url");
             newPhotoUrl = await getDownloadURL(data?.ref);
           }
-          // 기존이미지 경로 제거
-          if (post?.imageUrl !== newPhotoUrl) {
-            let imageRef = ref(storage, post?.imageUrl);
-            await deleteObject(imageRef).catch((error) => {
-              toast.error(error);
-            });
-          }
+          
           await updateDoc(postRef, {
             content: content,
             hashTags: tags,
