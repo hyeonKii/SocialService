@@ -1,6 +1,6 @@
 ## 반응형 소셜 네트워크 서비스
 
-- React, Firebase, vercel를 이용한 소셜 네트워크 프로젝트입니다.
+- React, Firebase, Vercel를 이용한 소셜 네트워크 프로젝트입니다.
 
 <br />
 
